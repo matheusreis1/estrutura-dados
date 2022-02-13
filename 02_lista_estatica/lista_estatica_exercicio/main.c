@@ -9,6 +9,8 @@ ListaLinearEstatica * criar_lista() {
   return lista;
 }
 void liberar_lista(ListaLinearEstatica * lista) {
+  if (lista == NULL)
+    return 0;
   free(lista);
 }
 
@@ -170,6 +172,7 @@ int main() {
       case 2:
         printf("Opcao %d\n - Liberar lista estática\n", opcao_menu);
         liberar_lista(lista);
+        lista = NULL;
         break;
       case 3:
         printf("Opcao %d\n - Inserir no começo\n", opcao_menu);
