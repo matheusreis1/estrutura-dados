@@ -5,7 +5,7 @@ ListaLinearEstatica * criar_lista() {
   ListaLinearEstatica * lista;
   lista = (ListaLinearEstatica*) malloc(sizeof(ED_LE));
   if (lista != NULL)
-    lista->quantidade = 0;
+    lista->fim = 0;
   return lista;
 }
 void liberar_lista(ListaLinearEstatica * lista) {
@@ -15,12 +15,12 @@ void liberar_lista(ListaLinearEstatica * lista) {
 int lista_cheia(ListaLinearEstatica * lista) {
   if (lista == NULL)
     return -1;
-  return (lista->quantidade == MAX);
+  return (lista->fim == MAX);
 }
 int lista_vazia(ListaLinearEstatica * lista) {
   if (lista == NULL)
     return -1;
-  return (lista->quantidade == 0);
+  return (lista->fim == 0);
 }
 
 int inserir_lista_inicio(ListaLinearEstatica * lista, ED_LE dado) {
@@ -29,16 +29,21 @@ int inserir_lista_inicio(ListaLinearEstatica * lista, ED_LE dado) {
   
   int i;
 
-  for (i = lista->quantidade - 1; i >= 0; i--)
+  for (i = lista->fim - 1; i >= 0; i--)
     lista->dados[i+1] = lista->dados[i];
   
   lista->dados[0] = dado;
-  lista->quantidade++;
+  lista->fim++;
 
   return 1;
 }
 int inserir_lista_fim(ListaLinearEstatica * lista, ED_LE dado) {
-
+  if (lista == NULL || lista_cheia(lista))
+    return 0;
+  
+  lista->dados[lista->fim] = dado;
+  lista->fim++;
+  return 1;
 }
 int inserir_lista_meio(ListaLinearEstatica * lista, ED_LE dado) {
 
@@ -70,7 +75,7 @@ void imprimir_lista(ListaLinearEstatica * lista) {
   
   int i;
 
-  for (i; i <= lista->quantidade - 1; i++)
+  for (i; i <= lista->fim - 1; i++)
     imprimir_item(lista->dados[i]);
 }
 

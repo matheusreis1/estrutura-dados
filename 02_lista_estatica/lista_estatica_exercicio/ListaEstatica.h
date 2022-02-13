@@ -4,7 +4,7 @@ typedef struct ed_le {
     int dado;
 } ED_LE;
 struct lista_linear_estatica {
-    int quantidade;
+    int fim;
     ED_LE dados[MAX];
 };
 typedef struct lista_linear_estatica ListaLinearEstatica;
