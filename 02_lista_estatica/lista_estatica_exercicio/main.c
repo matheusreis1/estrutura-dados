@@ -40,7 +40,7 @@ int inserir_lista_inicio(ListaLinearEstatica * lista, ED_LE dado) {
 int inserir_lista_fim(ListaLinearEstatica * lista, ED_LE dado) {
   if (lista == NULL || lista_cheia(lista))
     return 0;
-  
+
   lista->dados[lista->fim] = dado;
   lista->fim++;
   return 1;
@@ -114,17 +114,23 @@ int main() {
       case 3:
         printf("Opcao %d\n - Inserir no começo\n", opcao_menu);
         printf("Insira o valor do dado\n");
-        ED_LE dado;
-        int dado_inteiro;
-        scanf("%d", &dado_inteiro);
-        dado.dado = dado_inteiro;
-        inserir_lista_inicio(lista, dado);
+        ED_LE dado_inicio;
+        int dado_inicio_lista;
+        scanf("%d", &dado_inicio_lista);
+        dado_inicio.dado = dado_inicio_lista;
+        inserir_lista_inicio(lista, dado_inicio);
         break;
       case 4:
         printf("Opcao %d\n - Inserir no fim\n", opcao_menu);
+        printf("Insira o valor do dado\n");
+        ED_LE dado_final;
+        int dado_final_lista;
+        scanf("%d", &dado_final_lista);
+        dado_final.dado = dado_final_lista;
+        inserir_lista_fim(lista, dado_final);
         break;
       case 5:
-        printf("Opcao %d\n - Inseir no meio (ordenado)\n", opcao_menu);
+        printf("Opcao %d\n - Inserir no meio (ordenado)\n", opcao_menu);
         break;
       case 6:
         printf("Opcao %d\n - Remover do início\n", opcao_menu);
