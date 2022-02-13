@@ -74,10 +74,14 @@ int remover_lista_inico(ListaLinearEstatica * lista) {
 
   lista->fim--;
 
-  return 1;  
+  return 1;
 }
 int remover_lista_fim(ListaLinearEstatica * lista) {
+  if (lista == NULL || lista_vazia(lista))
+    return 0;
 
+  lista->fim--;
+  return 1;
 }
 int remover_lista_meio(ListaLinearEstatica * lista, int dado) {
 
@@ -168,6 +172,7 @@ int main() {
         break;
       case 7:
         printf("Opcao %d\n - Remover do fim\n", opcao_menu);
+        remover_lista_fim(lista);
         break;
       case 8:
         printf("Opcao %d\n - Remover do meio\n", opcao_menu);
