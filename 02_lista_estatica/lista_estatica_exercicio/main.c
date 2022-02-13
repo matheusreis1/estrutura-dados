@@ -64,7 +64,17 @@ int inserir_lista_meio(ListaLinearEstatica * lista, ED_LE dado) {
 }
 
 int remover_lista_inico(ListaLinearEstatica * lista) {
+  if (lista == NULL || lista_vazia(lista))
+    return 0;
 
+  int i;
+
+  for (i; i <= lista->fim - 1; i++)
+    lista->dados[i] = lista->dados[i + 1];
+
+  lista->fim--;
+
+  return 1;  
 }
 int remover_lista_fim(ListaLinearEstatica * lista) {
 
@@ -154,6 +164,7 @@ int main() {
         break;
       case 6:
         printf("Opcao %d\n - Remover do início\n", opcao_menu);
+        remover_lista_inico(lista);
         break;
       case 7:
         printf("Opcao %d\n - Remover do fim\n", opcao_menu);
