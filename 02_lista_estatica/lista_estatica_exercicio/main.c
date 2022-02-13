@@ -46,7 +46,21 @@ int inserir_lista_fim(ListaLinearEstatica * lista, ED_LE dado) {
   return 1;
 }
 int inserir_lista_meio(ListaLinearEstatica * lista, ED_LE dado) {
+  if (lista == NULL || lista_cheia(lista))
+    return 0;
 
+  int i, k = 0;
+
+  while (i < lista->fim && lista->dados[i].dado < dado.dado)
+    i++;
+
+  for (k = lista->fim - 1; k >= i; k--)
+    lista->dados[k+1] = lista->dados[k];
+
+  lista->dados[i] = dado;
+  lista->fim++;
+
+  return 1;
 }
 
 int remover_lista_inico(ListaLinearEstatica * lista) {
@@ -92,7 +106,7 @@ int main() {
       "2 - Liberar lista estática\n"
       "3 - Inserir no começo\n"
       "4 - Inserir no fim\n"
-      "5 - Inseir no meio (ordenado)\n"  
+      "5 - Inserir no meio (ordenado)\n"  
       "6 - Remover do início\n"  
       "7 - Remover do fim\n"  
       "8 - Remover do meio\n"  
@@ -131,6 +145,12 @@ int main() {
         break;
       case 5:
         printf("Opcao %d\n - Inserir no meio (ordenado)\n", opcao_menu);
+        printf("Insira o valor do dado\n");
+        ED_LE dado_meio;
+        int dado_meio_lista;
+        scanf("%d", &dado_meio_lista);
+        dado_meio.dado = dado_meio_lista;
+        inserir_lista_meio(lista, dado_meio);
         break;
       case 6:
         printf("Opcao %d\n - Remover do início\n", opcao_menu);
