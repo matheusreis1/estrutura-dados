@@ -104,10 +104,26 @@ int remover_lista_meio(ListaLinearEstatica * lista, int dado) {
 }
 
 int consulta_lista_conteudo(ListaLinearEstatica * lista, int dado, ED_LE * dado_struct) {
+  if (lista == NULL || lista_vazia(0))
+    return 0;
 
+  int i, k = 0;
+
+  while (i < lista->fim && lista->dados[i].dado != dado)
+    i++;
+
+  if (i == lista->fim)
+    return 0;
+  
+  *dado_struct = lista->dados[i];
+  return 1;
 }
 int consulta_lista_posicao(ListaLinearEstatica * lista, int posicao, ED_LE * dado_struct) {
-
+  if (lista == NULL || lista_vazia(lista) || posicao <= 0 || posicao > lista->fim)
+    return 0;
+  
+  *dado_struct = lista->dados[posicao - 1];
+  return 1;
 }
 
 void imprimir_item(ED_LE dado) {
@@ -199,9 +215,26 @@ int main() {
         break;
       case 9:
         printf("Opcao %d\n - Consultar pelo conteúdo\n", opcao_menu);
+        int dado_consultar_conteudo;
+        scanf("%d", &dado_consultar_conteudo);
+        ED_LE dado_struct_consultar_conteudo;
+        
+        int encontrou_conteudo = consulta_lista_conteudo(lista, dado_consultar_conteudo, &dado_struct_consultar_conteudo);
+        if (encontrou_conteudo)
+          printf("Encontrado!:\n");
+          imprimir_item(dado_struct_consultar_conteudo);
+
         break;
       case 10:
         printf("Opcao %d\n - Consultar pela posição\n", opcao_menu);
+        int dado_consultar_posicao;
+        scanf("%d", &dado_consultar_posicao);
+        ED_LE dado_struct_consultar_posicao;
+        
+        int encontrou_posicao = consulta_lista_posicao(lista, dado_consultar_posicao, &dado_struct_consultar_posicao);
+        if (encontrou_posicao)
+          printf("Encontrado!:\n");
+          imprimir_item(dado_struct_consultar_posicao);
         break;
       case 11:
         printf("Opcao %d\n - Imprimir lista estática\n", opcao_menu);\
