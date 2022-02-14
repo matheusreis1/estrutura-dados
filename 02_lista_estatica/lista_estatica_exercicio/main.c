@@ -106,7 +106,7 @@ int remover_lista_meio(ListaLinearEstatica * lista, int dado) {
 }
 
 int consulta_lista_conteudo(ListaLinearEstatica * lista, int dado, ED_LE * dado_struct) {
-  if (lista == NULL || lista_vazia(0))
+  if (lista == NULL || lista_vazia(lista))
     return 0;
 
   int i, k = 0;
@@ -221,7 +221,7 @@ int main() {
         int dado_consultar_conteudo;
         scanf("%d", &dado_consultar_conteudo);
         ED_LE dado_struct_consultar_conteudo;
-        
+
         int encontrou_conteudo = consulta_lista_conteudo(lista, dado_consultar_conteudo, &dado_struct_consultar_conteudo);
         if (encontrou_conteudo)
           printf("Encontrado!:\n");
@@ -233,7 +233,7 @@ int main() {
         int dado_consultar_posicao;
         scanf("%d", &dado_consultar_posicao);
         ED_LE dado_struct_consultar_posicao;
-        
+
         int encontrou_posicao = consulta_lista_posicao(lista, dado_consultar_posicao, &dado_struct_consultar_posicao);
         if (encontrou_posicao)
           printf("Encontrado!:\n");
