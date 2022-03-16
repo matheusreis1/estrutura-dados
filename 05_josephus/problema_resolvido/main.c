@@ -7,7 +7,7 @@ typedef struct Bloco {
 } Nodo;
 
 void inicializa_lista(Nodo ** lista) {
-    *lista == NULL;
+    *lista = NULL;
 }
 
 Nodo * cria_nodo() {
@@ -50,13 +50,13 @@ void procura(Nodo ** lista) {
         printf("Lista vazia!");
         exit(0);
     }
-    Nodo * aux = * lista;
-    int count;
-    while (count < 3) {
+    Nodo * aux;
+    aux = * lista;
+    while (aux->prox != *lista) {
         printf("nome da vez: %c\n", aux->nome);
         aux = aux->prox;
-        count++;
     }
+    // printf("nome da vez: %c\n", aux->nome);
 }
 
 void insere_direita(Nodo ** lista, char nome) {
@@ -110,22 +110,25 @@ int main() {
     // printf("Digite o nome de onde a contagem deve começar: \n");
     // scanf(" %c", &nome_inicio_contagem);
 
-    
     // ordena_lista(&lista, nome_inicio_contagem);
     
+    
+    
+
     // char nome_removido;
     // remove_nodo_esquerda(&lista, &nome_removido);
     // printf("Soldado %s removido \n", nome_removido);
     
     
     // enquanto a lista tiver mais que 1 item
+    // while (lista->prox != *lista)
 
     // ordena lista
     
     // faz a contagem enquanto o count for menor ou igual a numero_sorteado
 
     
-    // mostra a ordem de como ficou a lista (ta fixado com 4)
+    // mostra a ordem de como ficou a lista
     procura(&lista);
 }
 
