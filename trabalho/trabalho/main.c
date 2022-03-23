@@ -37,12 +37,28 @@ void insere_final_lista(Matriz_Esparsa ** lista, float dado, int lin, int col) {
     }
 }
 
-void imprime_lista(Matriz_Esparsa ** lista) {
-    if (*lista == NULL) return 0;
-    Matriz_Esparsa * aux = *lista;
+Matriz_Esparsa * busca_por_posicao(Matriz_Esparsa ** lista, int lin, int col) {
+    Matriz_Esparsa *aux = *lista;
     while (aux != NULL) {
-        printf("Dado: %f\n", aux->dado);
-        aux = aux->proximo;
+        if (aux->lin == lin && aux->col == col) return aux;
+        aux = aux->proximo; 
+    }
+    return NULL;
+}
+
+void imprime_lista(Matriz_Esparsa ** lista, int tamanho_linhas, int tamanho_colunas) {
+    if (*lista == NULL) return 0;
+    Matriz_Esparsa * aux;
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            aux = busca_por_posicao(&(*lista), linha, coluna);
+            float dado = 0;
+            if (aux) dado = aux->dado;
+            printf("%.2f  ", dado);
+        }
+        printf("\n");
     }
 }
 
@@ -57,21 +73,37 @@ void libera_lista(Matriz_Esparsa ** lista) {
     free(*lista);
 }
 
+void receber_matriz(Matriz_Esparsa ** lista, int tamanho_linhas, int tamanho_colunas) {
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            float dado;
+            printf("Insira o dado da posição [%i][%i]\n", linha, coluna);
+            scanf("%f",&dado);
+            if (dado != 0) insere_final_lista(&(*lista), dado, linha, coluna);
+        }
+    }
+}
+
 int main() {
     Matriz_Esparsa * matriz;
-
     inicia_lista(&matriz);
 
-    insere_final_lista(&matriz, 10.0, 0, 0);
-    insere_final_lista(&matriz, 20.0, 0, 1);
-    insere_final_lista(&matriz, 0.0, 1, 0);
-    insere_final_lista(&matriz, 40.0, 1, 1);
+    int tamanho_linhas;
+    printf("Digite o tamanho das linhas\n");
+    scanf("%d", &tamanho_linhas);
+    int tamanho_colunas;
+    printf("Digite o tamanho das colunas\n");
+    scanf("%d", &tamanho_colunas);
 
-    imprime_lista(&matriz);
+    receber_matriz(&matriz, tamanho_linhas, tamanho_colunas);
+
+    imprime_lista(&matriz, tamanho_linhas, tamanho_colunas);
 
     libera_lista(&matriz);
 
-    imprime_lista(&matriz);
+    imprime_lista(&matriz, tamanho_linhas, tamanho_colunas);
 
     return 1;
 }
