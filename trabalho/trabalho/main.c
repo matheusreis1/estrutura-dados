@@ -46,19 +46,35 @@ Matriz_Esparsa * busca_por_posicao(Matriz_Esparsa ** lista, int lin, int col) {
     return NULL;
 }
 
-void imprime_lista(Matriz_Esparsa ** lista, int tamanho_linhas, int tamanho_colunas) {
-    if (*lista == NULL) return 0;
+void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+    if (*matriz == NULL) return 0;
     Matriz_Esparsa * aux;
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            aux = busca_por_posicao(&(*lista), linha, coluna);
+            aux = busca_por_posicao(&(*matriz), linha, coluna);
             float dado = 0;
             if (aux) dado = aux->dado;
             printf("%.2f  ", dado);
         }
         printf("\n");
+    }
+}
+
+void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+    if (*matriz == NULL) return 0;
+    Matriz_Esparsa * aux;
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            if (linha != coluna) continue;
+            aux = busca_por_posicao(&(*matriz), linha, coluna);
+            float dado = 0;
+            if (aux) dado = aux->dado;
+            printf("%.2f ", dado);
+        }
     }
 }
 
@@ -99,11 +115,11 @@ int main() {
 
     receber_matriz(&matriz, tamanho_linhas, tamanho_colunas);
 
-    imprime_lista(&matriz, tamanho_linhas, tamanho_colunas);
+    // imprime_matriz(&matriz, tamanho_linhas, tamanho_colunas);
+
+    imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
 
     libera_lista(&matriz);
-
-    imprime_lista(&matriz, tamanho_linhas, tamanho_colunas);
 
     return 1;
 }
