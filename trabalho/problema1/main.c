@@ -6,8 +6,8 @@ typedef struct nodo {
     struct nodo * proximo;
 } Matriz_Esparsa;
 
-void inicia_lista(Matriz_Esparsa ** lista) {
-    *lista = NULL;
+void inicia_matriz(Matriz_Esparsa ** matriz) {
+    *matriz = NULL;
 }
 
 Matriz_Esparsa * cria_nodo() {
@@ -20,16 +20,16 @@ Matriz_Esparsa * cria_nodo() {
     return nodo;
 }
 
-void insere_final_lista(Matriz_Esparsa ** lista, float dado, int lin, int col) {
+void insere_final_matriz(Matriz_Esparsa ** matriz, float dado, int lin, int col) {
     Matriz_Esparsa * nodo = cria_nodo();
     nodo->dado = dado;
     nodo->lin = lin;
     nodo->col = col;
     nodo->proximo = NULL;
-    if (*lista == NULL) {
-        *lista = nodo;
+    if (*matriz == NULL) {
+        *matriz = nodo;
     } else {
-        Matriz_Esparsa * aux = *lista;
+        Matriz_Esparsa * aux = *matriz;
         while (aux->proximo != NULL) {
             aux = aux->proximo;
         }
@@ -37,8 +37,8 @@ void insere_final_lista(Matriz_Esparsa ** lista, float dado, int lin, int col) {
     }
 }
 
-Matriz_Esparsa * busca_por_posicao(Matriz_Esparsa ** lista, int lin, int col) {
-    Matriz_Esparsa *aux = *lista;
+Matriz_Esparsa * busca_por_posicao(Matriz_Esparsa ** matriz, int lin, int col) {
+    Matriz_Esparsa *aux = *matriz;
     while (aux != NULL) {
         if (aux->lin == lin && aux->col == col) return aux;
         aux = aux->proximo; 
@@ -65,6 +65,7 @@ void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_co
 void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return 0;
     Matriz_Esparsa * aux;
+    printf("Diagonal principal: \n");
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
@@ -78,18 +79,18 @@ void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, in
     }
 }
 
-void libera_lista(Matriz_Esparsa ** lista) {
-    if (*lista == NULL) return 0;
+void libera_matriz(Matriz_Esparsa ** matriz) {
+    if (*matriz == NULL) return 0;
     Matriz_Esparsa * aux;
-    while (*lista != NULL) {
-        aux = *lista;
-        *lista = (*lista)->proximo;
+    while (*matriz != NULL) {
+        aux = *matriz;
+        *matriz = (*matriz)->proximo;
         free(aux);
     }
-    free(*lista);
+    free(*matriz);
 }
 
-void receber_matriz(Matriz_Esparsa ** lista, int tamanho_linhas, int tamanho_colunas) {
+void receber_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
@@ -97,14 +98,14 @@ void receber_matriz(Matriz_Esparsa ** lista, int tamanho_linhas, int tamanho_col
             float dado;
             printf("Insira o dado da posição [%i][%i]\n", linha, coluna);
             scanf("%f",&dado);
-            if (dado != 0) insere_final_lista(&(*lista), dado, linha, coluna);
+            if (dado != 0) insere_final_matriz(&(*matriz), dado, linha, coluna);
         }
     }
 }
 
 int main() {
     Matriz_Esparsa * matriz;
-    inicia_lista(&matriz);
+    inicia_matriz(&matriz);
 
     int tamanho_linhas;
     printf("Digite o tamanho das linhas\n");
@@ -119,7 +120,7 @@ int main() {
 
     imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
 
-    libera_lista(&matriz);
+    libera_matriz(&matriz);
 
     return 1;
 }
