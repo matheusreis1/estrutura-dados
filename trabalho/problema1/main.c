@@ -29,33 +29,33 @@ void insere_final_matriz(Matriz_Esparsa ** matriz, float dado, int lin, int col)
     if (*matriz == NULL) {
         *matriz = nodo;
     } else {
-        Matriz_Esparsa * aux = *matriz;
-        while (aux->proximo != NULL) {
-            aux = aux->proximo;
+        Matriz_Esparsa *atual = *matriz;
+        while (atual->proximo != NULL) {
+            atual = atual->proximo;
         }
-        aux->proximo = nodo;
+        atual->proximo = nodo;
     }
 }
 
 Matriz_Esparsa * busca_por_posicao(Matriz_Esparsa ** matriz, int lin, int col) {
-    Matriz_Esparsa *aux = *matriz;
-    while (aux != NULL) {
-        if (aux->lin == lin && aux->col == col) return aux;
-        aux = aux->proximo; 
+    Matriz_Esparsa *nodo = *matriz;
+    while (nodo != NULL) {
+        if (nodo->lin == lin && nodo->col == col) return nodo;
+        nodo = nodo->proximo; 
     }
     return NULL;
 }
 
 void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return 0;
-    Matriz_Esparsa * aux;
+    Matriz_Esparsa *nodo;
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            aux = busca_por_posicao(&(*matriz), linha, coluna);
+            nodo = busca_por_posicao(&(*matriz), linha, coluna);
             float dado = 0;
-            if (aux) dado = aux->dado;
+            if (nodo) dado = nodo->dado;
             printf("%.2f  ", dado);
         }
         printf("\n");
@@ -64,16 +64,16 @@ void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_co
 
 void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return 0;
-    Matriz_Esparsa * aux;
+    Matriz_Esparsa *nodo;
     printf("Diagonal principal: \n");
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
             if (linha != coluna) continue;
-            aux = busca_por_posicao(&(*matriz), linha, coluna);
+            nodo = busca_por_posicao(&(*matriz), linha, coluna);
             float dado = 0;
-            if (aux) dado = aux->dado;
+            if (nodo) dado = nodo->dado;
             printf("%.2f ", dado);
         }
     }
@@ -81,16 +81,16 @@ void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, in
 
 void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return 0;
-    Matriz_Esparsa * aux, *transposta;
+    Matriz_Esparsa *nodo, *transposta;
     inicia_matriz(&transposta);
     printf("Matriz transposta: \n");
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            aux = busca_por_posicao(&(*matriz), linha, coluna);
+            nodo = busca_por_posicao(&(*matriz), linha, coluna);
             float dado = 0;
-            if (aux) dado = aux->dado;
+            if (nodo) dado = nodo->dado;
             // o numero de colunas é o contrario ao de linhas
             insere_final_matriz(&transposta, dado, coluna, linha);
         }
@@ -101,20 +101,20 @@ void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int
 
 void soma_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
     if (*matrizA == NULL || *matrizB == NULL) return 0;
-    Matriz_Esparsa * dadoA, *dadoB, *resultado;
+    Matriz_Esparsa *nodoA, *nodoB, *resultado;
     inicia_matriz(&resultado);
     printf("Soma das matrizes: \n");
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            dadoA = busca_por_posicao(&(*matrizA), linha, coluna);
-            float somaA = 0;
-            if (dadoA) somaA = dadoA->dado;
-            dadoB = busca_por_posicao(&(*matrizB), linha, coluna);
-            float somaB = 0;
-            if (dadoA) somaB = dadoB->dado;
-            float soma = somaA + somaB;
+            nodoA = busca_por_posicao(&(*matrizA), linha, coluna);
+            float dadoA = 0;
+            if (nodoA) dadoA = nodoA->dado;
+            nodoB = busca_por_posicao(&(*matrizB), linha, coluna);
+            float dadoB = 0;
+            if (nodoB) dadoB = nodoB->dado;
+            float soma = dadoA + dadoB;
             insere_final_matriz(&resultado, soma, linha, coluna);
         }
     }
@@ -123,21 +123,47 @@ void soma_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tam
 
 void subtrair_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
     if (*matrizA == NULL || *matrizB == NULL) return 0;
-    Matriz_Esparsa * dadoA, *dadoB, *resultado;
+    Matriz_Esparsa *nodoA, *nodoB, *resultado;
     inicia_matriz(&resultado);
     printf("Subtracao das matrizes: \n");
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            dadoA = busca_por_posicao(&(*matrizA), linha, coluna);
-            float subtracaoA = 0;
-            if (dadoA) subtracaoA = dadoA->dado;
-            dadoB = busca_por_posicao(&(*matrizB), linha, coluna);
-            float subtracaoB = 0;
-            if (dadoA) subtracaoB = dadoB->dado;
-            float subtracao = subtracaoA - subtracaoB;
+            nodoA = busca_por_posicao(&(*matrizA), linha, coluna);
+            float dadoA = 0;
+            if (nodoA) dadoA = nodoA->dado;
+            nodoB = busca_por_posicao(&(*matrizB), linha, coluna);
+            float dadoB = 0;
+            if (nodoB) dadoB = nodoB->dado;
+            float subtracao = dadoA - dadoB;
             insere_final_matriz(&resultado, subtracao, linha, coluna);
+        }
+    }
+    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
+}
+
+void multiplicar_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
+    if (*matrizA == NULL || *matrizB == NULL) return 0;
+    Matriz_Esparsa *nodoA, *nodoB, *resultado;
+    inicia_matriz(&resultado);
+    printf("Multiplicacao das matrizes: \n");
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            float soma = 0;
+            int indice;
+            for (indice = 0; indice < tamanho_linhas; indice++) {
+                nodoA = busca_por_posicao(&(*matrizA), linha, indice);
+                float dadoA = 0;
+                if (nodoA) dadoA = nodoA->dado;
+                nodoB = busca_por_posicao(&(*matrizB), indice, coluna);
+                float dadoB = 0;
+                if (nodoB) dadoB = nodoB->dado;
+                soma += dadoA * dadoB;
+            }
+            insere_final_matriz(&resultado, soma, linha, coluna);
         }
     }
     imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
@@ -183,7 +209,8 @@ int main() {
     // imprime_matriz(&matriz, tamanho_linhas, tamanho_colunas);
     // imprime_matriz_transposta(&matriz, tamanho_linhas, tamanho_colunas);
     // soma_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
-    subtrair_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
+    // subtrair_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
+    multiplicar_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
 
     // imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
 
