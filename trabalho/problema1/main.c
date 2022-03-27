@@ -111,11 +111,33 @@ void soma_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tam
             dadoA = busca_por_posicao(&(*matrizA), linha, coluna);
             float somaA = 0;
             if (dadoA) somaA = dadoA->dado;
-            dadoB = busca_por_posicao(&(*matrizA), linha, coluna);
+            dadoB = busca_por_posicao(&(*matrizB), linha, coluna);
             float somaB = 0;
             if (dadoA) somaB = dadoB->dado;
             float soma = somaA + somaB;
             insere_final_matriz(&resultado, soma, linha, coluna);
+        }
+    }
+    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
+}
+
+void subtrair_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
+    if (*matrizA == NULL || *matrizB == NULL) return 0;
+    Matriz_Esparsa * dadoA, *dadoB, *resultado;
+    inicia_matriz(&resultado);
+    printf("Subtracao das matrizes: \n");
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            dadoA = busca_por_posicao(&(*matrizA), linha, coluna);
+            float subtracaoA = 0;
+            if (dadoA) subtracaoA = dadoA->dado;
+            dadoB = busca_por_posicao(&(*matrizB), linha, coluna);
+            float subtracaoB = 0;
+            if (dadoA) subtracaoB = dadoB->dado;
+            float subtracao = subtracaoA - subtracaoB;
+            insere_final_matriz(&resultado, subtracao, linha, coluna);
         }
     }
     imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
@@ -160,7 +182,8 @@ int main() {
 
     // imprime_matriz(&matriz, tamanho_linhas, tamanho_colunas);
     // imprime_matriz_transposta(&matriz, tamanho_linhas, tamanho_colunas);
-    soma_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
+    // soma_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
+    subtrair_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
 
     // imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
 
