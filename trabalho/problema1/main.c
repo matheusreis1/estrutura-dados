@@ -79,6 +79,26 @@ void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, in
     }
 }
 
+void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+    if (*matriz == NULL) return 0;
+    Matriz_Esparsa * aux, *transposta;
+    inicia_matriz(&transposta);
+    printf("Matriz transposta: \n");
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            aux = busca_por_posicao(&(*matriz), linha, coluna);
+            float dado = 0;
+            if (aux) dado = aux->dado;
+            // o numero de colunas é o contrario ao de linhas
+            insere_final_matriz(&transposta, dado, coluna, linha);
+        }
+    }
+    // o numero de colunas é o contrario ao de linhas
+    imprime_matriz(&transposta, tamanho_colunas, tamanho_linhas);
+}
+
 void libera_matriz(Matriz_Esparsa ** matriz) {
     if (*matriz == NULL) return 0;
     Matriz_Esparsa * aux;
@@ -117,8 +137,9 @@ int main() {
     receber_matriz(&matriz, tamanho_linhas, tamanho_colunas);
 
     // imprime_matriz(&matriz, tamanho_linhas, tamanho_colunas);
+    imprime_matriz_transposta(&matriz, tamanho_linhas, tamanho_colunas);
 
-    imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
+    // imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
 
     libera_matriz(&matriz);
 
