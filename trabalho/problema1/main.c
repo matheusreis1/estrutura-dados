@@ -99,6 +99,28 @@ void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int
     imprime_matriz(&transposta, tamanho_colunas, tamanho_linhas);
 }
 
+void soma_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
+    if (*matrizA == NULL || *matrizB == NULL) return 0;
+    Matriz_Esparsa * dadoA, *dadoB, *resultado;
+    inicia_matriz(&resultado);
+    printf("Soma das matrizes: \n");
+    int linha;
+    for (linha = 0; linha < tamanho_linhas; linha++) {
+        int coluna;
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
+            dadoA = busca_por_posicao(&(*matrizA), linha, coluna);
+            float somaA = 0;
+            if (dadoA) somaA = dadoA->dado;
+            dadoB = busca_por_posicao(&(*matrizA), linha, coluna);
+            float somaB = 0;
+            if (dadoA) somaB = dadoB->dado;
+            float soma = somaA + somaB;
+            insere_final_matriz(&resultado, soma, linha, coluna);
+        }
+    }
+    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
+}
+
 void libera_matriz(Matriz_Esparsa ** matriz) {
     if (*matriz == NULL) return 0;
     Matriz_Esparsa * aux;
@@ -137,7 +159,8 @@ int main() {
     receber_matriz(&matriz, tamanho_linhas, tamanho_colunas);
 
     // imprime_matriz(&matriz, tamanho_linhas, tamanho_colunas);
-    imprime_matriz_transposta(&matriz, tamanho_linhas, tamanho_colunas);
+    // imprime_matriz_transposta(&matriz, tamanho_linhas, tamanho_colunas);
+    soma_matrizes(&matriz, &matriz, tamanho_linhas, tamanho_colunas);
 
     // imprime_diagonal_principal(&matriz, tamanho_linhas, tamanho_colunas);
 
