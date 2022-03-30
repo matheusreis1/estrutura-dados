@@ -110,32 +110,30 @@ void apaga_lista(Header * list) {
 }
 
 int main() {
-    /*
     Header list;
     initialize_list(&list);
 
 
-    insert_begin(&list, 1);
-    insert_begin(&list, 2);
-    insert_begin(&list, 3);
+    // insert_begin(&list, 10);
+    // insert_begin(&list, 20);
+    // insert_begin(&list, 3);
 
-    insert_end(&list, 1);
-    insert_end(&list, 2);
-    insert_end(&list, 3);
+    insert_end(&list, 10);
+    insert_end(&list, 20);
+    insert_end(&list, 30);
 
     print_list(&list);
 
-    remove_begin(&list);
-    remove_begin(&list);
-    remove_begin(&list);
-    remove_begin(&list);
-    remove_end(&list);
+    // remove_begin(&list);
+    // remove_begin(&list);
+    // remove_begin(&list);
+    // remove_begin(&list);
+    // remove_end(&list);
     printf("---------------\n");
 
     print_list(&list);
 
     apaga_lista(&list);
-    */
 
     return 1;
 }
