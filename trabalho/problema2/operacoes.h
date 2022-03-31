@@ -12,6 +12,7 @@ typedef struct cidadeHeader {
 
 typedef struct rota {
     CidadeHeader *cidades;
+    char nome;
     struct rota *proximo;
 } Rota;
 
