@@ -16,11 +16,11 @@ typedef struct rota {
     struct rota *proximo;
 } Rota;
 
-void inicia_lista_rotas(Rota ** rotas);
+void inicia_lista_rotas(Rota **rotas);
 Rota * criar_rota();
 void inserir_rota(Rota **rotas, char nomeRota, CidadeHeader *cidades);
 void excluir_rota(Rota **rotas, char nomeRota);
-void acessar_rota(Rota **rotas, char nomeRota); // busca ate achar o nome e entra no array de cidades
+void acessar_rota(Rota **rotas, char nomeRota, Rota **busca); 
 
 void inicializa_lista_cidades(CidadeHeader *cidades);
 Cidade * criar_cidade();

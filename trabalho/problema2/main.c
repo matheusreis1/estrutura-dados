@@ -57,7 +57,7 @@ void excluir_rota(Rota **rotas, char nomeRota) {
     free(atual);
 }
 
-void acessar_rota(Rota **rotas, char nomeRota) {
+void acessar_rota(Rota **rotas, char nomeRota, Rota **busca) {
     if (*rotas == NULL) return 0;
     Rota *atual;
     atual = *rotas;
@@ -68,7 +68,7 @@ void acessar_rota(Rota **rotas, char nomeRota) {
         printf("Rota não encontrada!\n");
         return 0;
     }
-    printf("achou: %c\n", atual->nome);
+    *busca = atual;
 }
 
 Cidade * criar_cidade() {
@@ -120,24 +120,69 @@ void apresentar_cidades(CidadeHeader *cidades) {
 }
 
 int main() {
-    CidadeHeader cidades;
-    inicializa_lista_cidades(&cidades);
-
-    inserir_cidade(&cidades, 'A', 'A');
-    inserir_cidade(&cidades, 'B', 'B');
-    inserir_cidade(&cidades, 'C', 'C');
-
-    apresentar_cidades(&cidades);
-
-    Rota *rotas;
+    Rota * rotas;
     inicia_lista_rotas(&rotas);
 
-    inserir_rota(&rotas, 'Y', &cidades);
-    inserir_rota(&rotas, 'Z', &cidades);
+    int escolha;
+    while (escolha != 4) {
+        printf("---- Menu ----\n");
+        printf(" 1. Cadastrar rota\n");
+        printf(" 2. Excluir rota\n");
+        printf(" 3. Visitar rota\n");
+        printf(" 4. Sair\n");
+        scanf("%i", &escolha);
+        switch (escolha) {
+        case 1:
+            printf("Digite o nome da rota:\n");
+            char nomeRota;
+            scanf(" %c", &nomeRota);
+            CidadeHeader cidades;
+            inicializa_lista_cidades(&cidades);
 
-    excluir_rota(&rotas, 'Y');
-
-    acessar_rota(&rotas, 'Z');
+            int escolhaCidades;
+            while (escolhaCidades != 2) {
+                printf("---- Menu ----\n");
+                printf(" 1. Cadastrar nova cidade\n");
+                printf(" 2. Sair\n");
+                scanf("%i", &escolhaCidades);
+                switch (escolhaCidades) {
+                case 1:
+                    printf("Digite o nome da cidade:\n");
+                    char nomeCidade;
+                    scanf(" %c", &nomeCidade);
+                    printf("Digite a descrição da cidade:\n");
+                    char descricaoCidade;
+                    scanf(" %c", &descricaoCidade);
+                    inserir_cidade(&cidades, nomeCidade, descricaoCidade);
+                    break;
+                default:
+                    escolhaCidades = 2;
+                    break;
+                }    
+            }
+            inserir_rota(&rotas, nomeRota, &cidades);
+            break;
+        case 2:
+            printf("Digite o nome da rota que deseja excluir:\n");
+            char nome;
+            scanf(" %c", &nome);
+            excluir_rota(&rotas, nome);
+            break;
+        case 3:
+            printf("Digite o nome da rota que deseja visitar:\n");
+            Rota * rotaVisita;
+            char nomeRotaVisita;
+            scanf(" %c", &nomeRotaVisita);
+            acessar_rota(&rotas, nomeRotaVisita, &rotaVisita);
+            apresentar_cidades(rotaVisita->cidades);
+            break;
+        case 4:
+            break;
+        default:
+            printf("Opção inválida!\n");
+            break;
+        }
+    }
 }
 
 /*
