@@ -118,7 +118,7 @@ void excluir_rota(Rota **rotas, char nomeRota[]) {
     if (*rotas == NULL) return;
     Rota *atual = *rotas;
     Rota *anterior = (Rota*) malloc(sizeof(Rota));
-    while (atual != NULL && atual->nome != nomeRota) {
+    while (atual != NULL && strcmp(atual->nome, nomeRota) != 0) {
         anterior = atual;
         atual = atual->proximo;
     }
@@ -206,6 +206,7 @@ int main() {
                 inserir_rota(&rotas, nomeRota, &cidades);
                 break;
             case 2:
+                apresentar_rotas(&rotas);
                 printf("Digite o nome da rota que deseja excluir:\n");
                 char nome[MAX_LIMIT];
                 scanf (" %[^\n]%*c", nome);
