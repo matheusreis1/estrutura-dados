@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#define MAX_LIMIT 64
 
 typedef struct cidade {
-    char descricao;
-    char nome;
+    char descricao[MAX_LIMIT];
+    char nome[MAX_LIMIT];
     struct cidade *proximo;
     struct cidade *anterior;
 } Cidade;
@@ -15,7 +17,7 @@ typedef struct cidadeHeader {
 
 typedef struct rota {
     CidadeHeader *cidades;
-    char nome;
+    char nome[MAX_LIMIT];
     struct rota *proximo;
 } Rota;
 
@@ -35,10 +37,10 @@ Cidade * criar_cidade() {
     return cidade;
 }
 
-void inserir_cidade(CidadeHeader **cidades, char nomeCidade, char descricaoCidade) {
+void inserir_cidade(CidadeHeader **cidades, char nomeCidade[], char descricaoCidade[]) {
     Cidade *cidade = criar_cidade();
-    cidade->nome = nomeCidade;
-    cidade->descricao = descricaoCidade;
+    strcpy((*cidade).nome, nomeCidade);
+    strcpy((*cidade).descricao, descricaoCidade);
     cidade->proximo = NULL;
     cidade->anterior = (*cidades)->ultimo;
     if ((*cidades)->ultimo != NULL)
@@ -50,7 +52,7 @@ void inserir_cidade(CidadeHeader **cidades, char nomeCidade, char descricaoCidad
 }
 
 void apresentar_cidades(CidadeHeader *cidades) {
-    if (!cidades || (cidades) == NULL || (cidades)->quantidade == 0) {
+    if (!cidades || (cidades)->quantidade == 0) {
         printf("lista vazia");
         exit(0);
     }
@@ -58,7 +60,7 @@ void apresentar_cidades(CidadeHeader *cidades) {
     atual = (cidades)->primeiro;
 
     while (atual != NULL) {
-        printf("Cidade: %c\nDescrição: %c\n", atual->nome, atual->descricao);
+        printf("Cidade: %s\nDescrição: %s\n", atual->nome, atual->descricao);
         printf("1 - Ir para próxima cidade\n2 - Voltar para cidade anterior\n");
         int escolha;
         scanf("%i", &escolha);
@@ -85,9 +87,9 @@ Rota * criar_rota() {
     return rota;
 }
 
-void inserir_rota(Rota ** rotas, char nome, CidadeHeader **cidades) {
+void inserir_rota(Rota ** rotas, char nome[], CidadeHeader **cidades) {
     Rota *rota = criar_rota();
-    rota->nome = nome;
+    strcpy(rota->nome, nome);
     rota->cidades = *cidades;
     rota->proximo = NULL;
     if ((*rotas) == NULL) {
@@ -112,7 +114,7 @@ void excluir_cidades(CidadeHeader **cidades) {
     free(*cidades);
 }
 
-void excluir_rota(Rota **rotas, char nomeRota) {
+void excluir_rota(Rota **rotas, char nomeRota[]) {
     if (*rotas == NULL) return;
     Rota *atual = *rotas;
     Rota *anterior = (Rota*) malloc(sizeof(Rota));
@@ -134,18 +136,30 @@ void excluir_rota(Rota **rotas, char nomeRota) {
 
 void apresentar_rota(Rota *rota) {
     if (rota != NULL)
-        printf("Nome: %c\n", rota->nome);
+        printf("Nome: %s\n", rota->nome);
 }
 
-void acessar_rota(Rota *rotas, char nomeRota, Rota **busca) {
+void apresentar_rotas(Rota ** rotas) {
+    if (*rotas == NULL) return;
+    printf("Rotas disponiveis:\n");
+    Rota *atual = *rotas;
+    int numero = 1;
+    do {
+        printf("Rota #%i:\n", numero);
+        apresentar_rota(atual);
+        atual = atual->proximo;
+        numero++;
+    } while (atual != NULL);
+}
+
+void acessar_rota(Rota *rotas, char nomeRota[], Rota **busca) {
     Rota *auxiliar;
     if (rotas == NULL) {
         printf("Lista esta vazia\n");
         *busca = NULL;
     } else {
         for (auxiliar = rotas; auxiliar != NULL; auxiliar = auxiliar->proximo) {
-            apresentar_rota(auxiliar);
-            if (auxiliar->nome == nomeRota) {
+            if (strcmp(auxiliar->nome, nomeRota) == 0) {
                 *busca = auxiliar;
                 break;
             }
@@ -157,7 +171,7 @@ int main() {
     Rota * rotas;
     iniciar_lista_rotas(&rotas);
 
-    int escolha;
+    int escolha = 0;
     while (escolha != 4) {
         printf("---- Menu ----\n");
         printf(" 1. Cadastrar rota\n");
@@ -168,8 +182,8 @@ int main() {
         switch (escolha) {
             case 1:
                 printf("Digite o nome da rota:\n");
-                char nomeRota;
-                scanf(" %c", &nomeRota);
+                char nomeRota[MAX_LIMIT];
+                scanf(" %[^\n]%*c", nomeRota);
                 CidadeHeader * cidades;
                 iniciar_lista_cidades(&cidades);
 
@@ -179,34 +193,30 @@ int main() {
                     printf(" 1. Cadastrar nova cidade\n");
                     printf(" 2. Sair\n");
                     scanf("%i", &escolhaCidades);
-                    switch (escolhaCidades) {
-                        case 1:
-                            printf("Digite o nome da cidade:\n");
-                            char nomeCidade;
-                            scanf(" %c", &nomeCidade);
-                            printf("Digite a descrição da cidade:\n");
-                            char descricaoCidade;
-                            scanf(" %c", &descricaoCidade);
-                            inserir_cidade(&cidades, nomeCidade, descricaoCidade);
-                            break;
-                        default:
-                            escolhaCidades = 2;
-                            break;
-                    }
+                    if (escolhaCidades == 1) {
+                        printf("Digite o nome da cidade:\n");
+                        char nomeCidade[MAX_LIMIT];
+                        scanf(" %[^\n]%*c", nomeCidade);
+                        printf("Digite a descrição da cidade:\n");
+                        char descricaoCidade[MAX_LIMIT];
+                        scanf(" %[^\n]%*c", descricaoCidade);
+                        inserir_cidade(&cidades, nomeCidade, descricaoCidade);
+                    } else break;
                 }
                 inserir_rota(&rotas, nomeRota, &cidades);
                 break;
             case 2:
                 printf("Digite o nome da rota que deseja excluir:\n");
-                char nome;
-                scanf(" %c", &nome);
+                char nome[MAX_LIMIT];
+                scanf (" %[^\n]%*c", nome);
                 excluir_rota(&rotas, nome);
                 break;
             case 3:
+                apresentar_rotas(&rotas);
                 printf("Digite o nome da rota que deseja visitar:\n");
                 Rota * rotaVisita;
-                char nomeRotaVisita;
-                scanf(" %c", &nomeRotaVisita);
+                char nomeRotaVisita[MAX_LIMIT];
+                scanf (" %[^\n]%*c", nomeRotaVisita);
                 acessar_rota(rotas, nomeRotaVisita, &rotaVisita);
                 if (rotaVisita)
                     apresentar_cidades(rotaVisita->cidades);
