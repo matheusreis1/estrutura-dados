@@ -1,4 +1,4 @@
-FROM gcc:4.9
+FROM gcc:11.2
 
 ARG path
 
