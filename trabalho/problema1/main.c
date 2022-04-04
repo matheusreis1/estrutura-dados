@@ -152,15 +152,19 @@ void imprimir_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, i
     if (*matriz == NULL) return;
     Matriz_Esparsa *matrizEsparsa;
     int linha;
-    for (linha = 0; linha < tamanho_linhas; linha++) {
+    for (linha = 0; linha < tamanho_linhas; linha++) {       
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            if (linha != coluna) continue;
+            if (linha != coluna) {
+                printf("  ");
+                continue;
+            }
             matrizEsparsa = busca_por_posicao_matriz_esparsa(&(*matriz), linha, coluna);
             float dado = 0;
             if (matrizEsparsa) dado = matrizEsparsa->dado;
-            printf("%.2f ", dado);
+            printf("%.2f  ", dado);
         }
+        printf("\n");
     }
 }
 void imprimir_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
@@ -379,14 +383,14 @@ int main() {
             case 6:
                 printf(" -- Diagonal principal da matriz --\n");
                 imprimir_matrizes(&matrizes);
-                int indiceA;
+                int indiceDiagonalPrincipal;
 
                 printf("Digite o indice da matriz:\n");
-                scanf("%i", &indiceTranspostaA);
+                scanf("%i", &indiceDiagonalPrincipal);
 
                 Matriz * buscaDiagonalPrincipal;
                 iniciar_lista_matrizes(&buscaDiagonalPrincipal);
-                acessar_matriz(&matrizes, indiceTranspostaA, &buscaDiagonalPrincipal);
+                acessar_matriz(&matrizes, indiceDiagonalPrincipal, &buscaDiagonalPrincipal);
 
                 imprimir_diagonal_principal(&buscaDiagonalPrincipal->matriz->matriz, buscaDiagonalPrincipal->matriz->quantidade_linhas, buscaDiagonalPrincipal->matriz->quantidade_colunas);
                 break;
