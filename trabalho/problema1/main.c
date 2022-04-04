@@ -18,14 +18,12 @@ typedef struct lista_matriz {
     struct lista_matriz *proximo;
 } Matriz;
 
-// criar lista de matrizes
 void iniciar_lista_matrizes(Matriz ** matrizes) {
     *matrizes = NULL;
 }
 void iniciar_matriz_esparsa(Matriz_Esparsa ** matriz) {
     *matriz = NULL;
 }
-// adicionar matriz nova no final
 Matriz * criar_matriz() {
     Matriz * matriz = (Matriz *) malloc(sizeof(Matriz));
     if (!matriz) {
@@ -100,33 +98,6 @@ void adicionar_matriz(Matriz ** matrizes, Matriz_Esparsa **matrizEsparsa, int qu
     }
 }
 
-// procurar matriz
-void imprimir_matriz(Matriz * matriz) {
-    printf("Matriz #%i\n", matriz->matriz->indice);
-    printf("Numero de linhas: %i\n", matriz->matriz->quantidade_linhas);
-    printf("Numero de colunas %i\n", matriz->matriz->quantidade_colunas);
-}
-void imprimir_matrizes(Matriz ** matrizes) {
-    printf("Matrizes disponiveis:\n");
-    Matriz * atual;
-    if ((*matrizes) == NULL) {
-        printf("Lista esta vazia\n");
-    } else {
-        for (atual = *matrizes; atual != NULL; atual = atual->proximo) {
-            imprimir_matriz(atual);
-        }
-    }
-}
-void acessar_matriz(Matriz ** matrizes, int indice, Matriz **busca) {
-    Matriz * atual;
-    if ((*matrizes) == NULL) {
-        printf("Lista esta vazia\n");
-    } else {
-        for (atual = *matrizes; atual != NULL; atual = atual->proximo) {
-            if (atual->matriz->indice == indice) *busca = atual;
-        }
-    }
-}
 Matriz_Esparsa * busca_por_posicao_matriz_esparsa(Matriz_Esparsa ** matriz, int lin, int col) {
     Matriz_Esparsa *nodo = *matriz;
     while (nodo != NULL) {
@@ -135,7 +106,7 @@ Matriz_Esparsa * busca_por_posicao_matriz_esparsa(Matriz_Esparsa ** matriz, int 
     }
     return NULL;
 }
-void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+void imprimir_matriz_formatada(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return;
     Matriz_Esparsa *matrizEsparsa;
     int linha;
@@ -150,7 +121,34 @@ void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_co
         printf("\n");
     }
 }
-void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+void imprimir_matriz_header(Matriz * matriz) {
+    printf("Matriz #%i\n", matriz->matriz->indice);
+    printf("Numero de linhas: %i\n", matriz->matriz->quantidade_linhas);
+    printf("Numero de colunas %i\n", matriz->matriz->quantidade_colunas);
+}
+void imprimir_matrizes(Matriz ** matrizes) {
+    printf("Matrizes disponiveis:\n");
+    Matriz * atual;
+    if ((*matrizes) == NULL) {
+        printf("Lista esta vazia\n");
+    } else {
+        for (atual = *matrizes; atual != NULL; atual = atual->proximo) {
+            imprimir_matriz_header(atual);
+            imprimir_matriz_formatada(&atual->matriz->matriz, atual->matriz->quantidade_linhas, atual->matriz->quantidade_colunas);
+        }
+    }
+}
+void acessar_matriz(Matriz ** matrizes, int indice, Matriz **busca) {
+    Matriz * atual;
+    if ((*matrizes) == NULL) {
+        printf("Lista esta vazia\n");
+    } else {
+        for (atual = *matrizes; atual != NULL; atual = atual->proximo) {
+            if (atual->matriz->indice == indice) *busca = atual;
+        }
+    }
+}
+void imprimir_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return;
     Matriz_Esparsa *matrizEsparsa;
     int linha;
@@ -165,7 +163,7 @@ void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, in
         }
     }
 }
-void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+void imprimir_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return;
     Matriz_Esparsa *matrizEsparsa, *transposta;
     iniciar_matriz_esparsa(&transposta);
@@ -181,10 +179,9 @@ void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int
         }
     }
     // o numero de colunas é o contrario ao de linhas
-    imprime_matriz(&transposta, tamanho_colunas, tamanho_linhas);
+    imprimir_matriz_formatada(&transposta, tamanho_colunas, tamanho_linhas);
 }
 
-// operacoes
 void soma_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
@@ -213,7 +210,7 @@ void soma_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * ma
             insere_final_matriz(&resultado, soma, linha, coluna);
         }
     }
-    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
+    imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
 }
 void subtrair_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
@@ -242,7 +239,7 @@ void subtrair_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader 
             insere_final_matriz(&resultado, subtracao, linha, coluna);
         }
     }
-    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
+    imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
 }
 void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
@@ -274,10 +271,11 @@ void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHead
             insere_final_matriz(&resultado, soma, linha, coluna);
         }
     }
-    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
+    imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
 }
 
 int main() {
+    setbuf(stdout, 0);
     Matriz * matrizes;
     iniciar_lista_matrizes(&matrizes);
 
@@ -376,7 +374,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaTransposta);
                 acessar_matriz(&matrizes, indiceTranspostaA, &buscaTransposta);
 
-                imprime_matriz_transposta(&buscaTransposta->matriz->matriz, buscaTransposta->matriz->quantidade_linhas, buscaTransposta->matriz->quantidade_colunas);
+                imprimir_matriz_transposta(&buscaTransposta->matriz->matriz, buscaTransposta->matriz->quantidade_linhas, buscaTransposta->matriz->quantidade_colunas);
                 break;
             case 6:
                 printf(" -- Diagonal principal da matriz --\n");
@@ -390,7 +388,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaDiagonalPrincipal);
                 acessar_matriz(&matrizes, indiceTranspostaA, &buscaDiagonalPrincipal);
 
-                imprime_diagonal_principal(&buscaDiagonalPrincipal->matriz->matriz, buscaDiagonalPrincipal->matriz->quantidade_linhas, buscaDiagonalPrincipal->matriz->quantidade_colunas);
+                imprimir_diagonal_principal(&buscaDiagonalPrincipal->matriz->matriz, buscaDiagonalPrincipal->matriz->quantidade_linhas, buscaDiagonalPrincipal->matriz->quantidade_colunas);
                 break;
             case 7:
                 printf(" -- Imprimir matriz --\n");
@@ -404,7 +402,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaImprimir);
                 acessar_matriz(&matrizes, indiceImprimir, &buscaImprimir);
 
-                imprime_matriz(&buscaImprimir->matriz->matriz, buscaImprimir->matriz->quantidade_linhas, buscaImprimir->matriz->quantidade_colunas);
+                imprimir_matriz_formatada(&buscaImprimir->matriz->matriz, buscaImprimir->matriz->quantidade_linhas, buscaImprimir->matriz->quantidade_colunas);
                 break;
             default:
                 printf("Opção inválida!\n");
