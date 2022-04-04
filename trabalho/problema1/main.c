@@ -76,7 +76,6 @@ void receber_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_co
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
             float dado;
-            setbuf(stdout, 0);
             printf("Insira o dado da posição [%i][%i]\n", linha, coluna);
             scanf("%f",&dado);
             if (dado != 0) insere_final_matriz(&(*matriz), dado, linha, coluna);
@@ -147,7 +146,6 @@ void imprime_matriz(Matriz_Esparsa ** matrizEsparsa, int tamanho_linhas, int tam
             nodo = busca_por_posicao_matriz_esparsa(&(*matrizEsparsa), linha, coluna);
             float dado = 0;
             if (nodo) dado = nodo->dado;
-            setbuf(stdout, 0);
             printf("%.2f  ", dado);
         }
         printf("\n");
@@ -279,10 +277,8 @@ int main() {
                 Matriz_Esparsa * matrizEsparsa;
                 iniciar_matriz_esparsa(&matrizEsparsa);
                 int quantidadeLinhas, quantidadeColunas;
-                setbuf(stdout, 0);
                 printf("Digite o numero de linhas da matriz:\n");
                 scanf("%i", &quantidadeLinhas);
-                setbuf(stdout, 0);
                 printf("Digite o numero de colunas da matriz:\n");
                 scanf("%i", &quantidadeColunas);
                 receber_matriz(&matrizEsparsa, quantidadeLinhas, quantidadeColunas);
@@ -293,10 +289,8 @@ int main() {
                 printf(" -- Soma de matrizes --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceSomaA, indiceSomaB;
-                setbuf(stdout, 0);
                 printf("Digite o indice da primeira matriz:\n");
                 scanf("%i", &indiceSomaA);
-                setbuf(stdout, 0);
                 printf("Digite o indice da segunda matriz:\n");
                 scanf("%i", &indiceSomaB);
                 Matriz * buscaSomaA;
@@ -316,10 +310,10 @@ int main() {
                 printf(" -- Subtracao de matrizes --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceSubtracaoA, indiceSubtracaoB;
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da primeira matriz:\n");
                 scanf("%i", &indiceSubtracaoA);
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da segunda matriz:\n");
                 scanf("%i", &indiceSubtracaoB);
                 Matriz * buscaSubtracaoA;
@@ -339,10 +333,10 @@ int main() {
                 printf(" -- Multiplicacao de matrizes --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceMultiplicacaoA, indiceMultiplicacaoB;
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da primeira matriz:\n");
                 scanf("%i", &indiceMultiplicacaoA);
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da segunda matriz:\n");
                 scanf("%i", &indiceMultiplicacaoB);
                 Matriz * buscaMultiplicacaoA;
@@ -362,7 +356,7 @@ int main() {
                 printf(" -- Matriz transposta --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceTranspostaA;
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da matriz:\n");
                 scanf("%i", &indiceTranspostaA);
 
@@ -376,7 +370,7 @@ int main() {
                 printf(" -- Diagonal principal da matriz --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceA;
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da matriz:\n");
                 scanf("%i", &indiceTranspostaA);
 
@@ -390,7 +384,7 @@ int main() {
                 printf(" -- Imprimir matriz --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceImprimir;
-                setbuf(stdout, 0);
+
                 printf("Digite o indice da matriz:\n");
                 scanf("%i", &indiceImprimir);
 
