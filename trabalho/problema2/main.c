@@ -186,6 +186,7 @@ int main() {
                 scanf(" %[^\n]%*c", nomeRota);
                 CidadeHeader * cidades;
                 iniciar_lista_cidades(&cidades);
+                inserir_cidade(&cidades, "Curitiba", "Capital do estado do Parana");
 
                 int escolhaCidades = 0;
                 while (escolhaCidades != 2) {
