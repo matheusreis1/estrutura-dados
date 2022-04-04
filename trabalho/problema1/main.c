@@ -304,7 +304,6 @@ void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHead
 }
 
 int main() {
-    setbuf(stdout, 0);
     Matriz * matrizes;
     iniciar_lista_matrizes(&matrizes);
 

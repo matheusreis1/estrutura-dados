@@ -133,6 +133,17 @@ void excluir_rota(Rota **rotas, char nomeRota[]) {
     excluir_cidades(&(atual)->cidades);
     free(atual);
 }
+void libera_lista_rotas(Rota **rotas) {
+    if (*rotas == NULL) return;
+    Rota * atual;
+    while (*rotas != NULL) {
+        atual = *rotas;
+        excluir_rota(rotas, atual->nome);
+        *rotas = (*rotas)->proximo;
+        free(atual);
+    }
+    free(*rotas);
+}
 
 void apresentar_rota(Rota *rota) {
     if (rota != NULL)
@@ -224,6 +235,7 @@ int main() {
                     apresentar_cidades(rotaVisita->cidades);
                 break;
             case 4:
+                libera_lista_rotas(&rotas);
                 break;
             default:
                 printf("Opção inválida!\n");
