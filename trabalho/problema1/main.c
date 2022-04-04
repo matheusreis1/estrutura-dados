@@ -84,8 +84,6 @@ void receber_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_co
 }
 void adicionar_matriz(Matriz ** matrizes, Matriz_Esparsa **matrizEsparsa, int quantidade_linhas, int quantidade_colunas) {
     int indice = 1;
-    if ((*matrizes) != NULL)
-        indice = (*matrizes)->matriz->indice + 1;
     MatrizEsparsaHeader * header = criar_header(*matrizEsparsa, quantidade_linhas, quantidade_colunas, indice);
     Matriz * matriz = criar_matriz();
     matriz->matriz = header;
@@ -97,6 +95,7 @@ void adicionar_matriz(Matriz ** matrizes, Matriz_Esparsa **matrizEsparsa, int qu
         while (auxiliar->proximo != NULL) {
             auxiliar = auxiliar->proximo;
         }
+        matriz->matriz->indice = auxiliar->matriz->indice + 1;
         auxiliar->proximo = matriz;
     }
 }
@@ -136,16 +135,16 @@ Matriz_Esparsa * busca_por_posicao_matriz_esparsa(Matriz_Esparsa ** matriz, int 
     }
     return NULL;
 }
-void imprime_matriz(Matriz_Esparsa ** matrizEsparsa, int tamanho_linhas, int tamanho_colunas) {
-    if (*matrizEsparsa == NULL) return;
-    Matriz_Esparsa *nodo;
+void imprime_matriz(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
+    if (*matriz == NULL) return;
+    Matriz_Esparsa *matrizEsparsa;
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            nodo = busca_por_posicao_matriz_esparsa(&(*matrizEsparsa), linha, coluna);
+            matrizEsparsa = busca_por_posicao_matriz_esparsa(&(*matriz), linha, coluna);
             float dado = 0;
-            if (nodo) dado = nodo->dado;
+            if (matrizEsparsa) dado = matrizEsparsa->dado;
             printf("%.2f  ", dado);
         }
         printf("\n");
@@ -153,32 +152,30 @@ void imprime_matriz(Matriz_Esparsa ** matrizEsparsa, int tamanho_linhas, int tam
 }
 void imprime_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return;
-    Matriz_Esparsa *nodo;
-    printf("Diagonal principal: \n");
+    Matriz_Esparsa *matrizEsparsa;
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
             if (linha != coluna) continue;
-            nodo = busca_por_posicao_matriz_esparsa(&(*matriz), linha, coluna);
+            matrizEsparsa = busca_por_posicao_matriz_esparsa(&(*matriz), linha, coluna);
             float dado = 0;
-            if (nodo) dado = nodo->dado;
+            if (matrizEsparsa) dado = matrizEsparsa->dado;
             printf("%.2f ", dado);
         }
     }
 }
 void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
     if (*matriz == NULL) return;
-    Matriz_Esparsa *nodo, *transposta;
+    Matriz_Esparsa *matrizEsparsa, *transposta;
     iniciar_matriz_esparsa(&transposta);
-    printf("Matriz transposta: \n");
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
-            nodo = busca_por_posicao_matriz_esparsa(&(*matriz), linha, coluna);
+            matrizEsparsa = busca_por_posicao_matriz_esparsa(&(*matriz), linha, coluna);
             float dado = 0;
-            if (nodo) dado = nodo->dado;
+            if (matrizEsparsa) dado = matrizEsparsa->dado;
             // o numero de colunas é o contrario ao de linhas
             insere_final_matriz(&transposta, dado, coluna, linha);
         }
@@ -188,8 +185,18 @@ void imprime_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, int
 }
 
 // operacoes
-void soma_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
+void soma_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
+    Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
+    Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
     if (*matrizA == NULL || *matrizB == NULL) return;
+    if (matrizAHeader->quantidade_linhas != matrizBHeader->quantidade_linhas ||
+        matrizAHeader->quantidade_colunas != matrizBHeader->quantidade_colunas) {
+        printf("A operação de soma só é possível quando o numero de linhas e colunas das matrizes são iguais!\n");
+        return;
+    }
+    int tamanho_linhas = matrizAHeader->quantidade_linhas;
+    int tamanho_colunas = matrizAHeader->quantidade_colunas;
+
     Matriz_Esparsa *nodoA, *nodoB, *resultado;
     iniciar_matriz_esparsa(&resultado);
     int linha;
@@ -208,8 +215,17 @@ void soma_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tam
     }
     imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
 }
-void subtrair_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhas, int tamanho_colunas) {
+void subtrair_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
+    Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
+    Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
     if (*matrizA == NULL || *matrizB == NULL) return;
+    if (matrizAHeader->quantidade_linhas != matrizBHeader->quantidade_linhas ||
+        matrizAHeader->quantidade_colunas != matrizBHeader->quantidade_colunas) {
+        printf("A operação de subtração só é possível quando o numero de linhas e colunas das matrizes são iguais!\n");
+        return;
+    }
+    int tamanho_linhas = matrizAHeader->quantidade_linhas;
+    int tamanho_colunas = matrizAHeader->quantidade_colunas;
     Matriz_Esparsa *nodoA, *nodoB, *resultado;
     iniciar_matriz_esparsa(&resultado);
     int linha;
@@ -228,17 +244,25 @@ void subtrair_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int
     }
     imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
 }
-void multiplicar_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, int tamanho_linhasA, int tamanho_colunasB) {
+void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
+    Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
+    Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
     if (*matrizA == NULL || *matrizB == NULL) return;
+    if (matrizAHeader->quantidade_colunas != matrizBHeader->quantidade_linhas) {
+        printf("A operação de multiplicação só é possível quando o numero de colunas da matriz A e o numero de linhas da matriz B são iguais!\n");
+        return;
+    }
+    int tamanho_linhas = matrizAHeader->quantidade_linhas;
+    int tamanho_colunas = matrizBHeader->quantidade_colunas;
     Matriz_Esparsa *nodoA, *nodoB, *resultado;
     iniciar_matriz_esparsa(&resultado);
     int linha;
-    for (linha = 0; linha < tamanho_linhasA; linha++) {
+    for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
-        for (coluna = 0; coluna < tamanho_colunasB; coluna++) {
+        for (coluna = 0; coluna < tamanho_colunas; coluna++) {
             float soma = 0;
             int indice;
-            for (indice = 0; indice < tamanho_linhasA; indice++) {
+            for (indice = 0; indice < tamanho_linhas; indice++) {
                 nodoA = busca_por_posicao_matriz_esparsa(&(*matrizA), linha, indice);
                 float dadoA = 0;
                 if (nodoA) dadoA = nodoA->dado;
@@ -250,7 +274,7 @@ void multiplicar_matrizes(Matriz_Esparsa ** matrizA, Matriz_Esparsa ** matrizB, 
             insere_final_matriz(&resultado, soma, linha, coluna);
         }
     }
-    imprime_matriz(&resultado, tamanho_linhasA, tamanho_colunasB);
+    imprime_matriz(&resultado, tamanho_linhas, tamanho_colunas);
 }
 
 int main() {
@@ -289,6 +313,7 @@ int main() {
                 printf(" -- Soma de matrizes --\n");
                 imprimir_matrizes(&matrizes);
                 int indiceSomaA, indiceSomaB;
+
                 printf("Digite o indice da primeira matriz:\n");
                 scanf("%i", &indiceSomaA);
                 printf("Digite o indice da segunda matriz:\n");
@@ -300,11 +325,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaSomaB);
                 acessar_matriz(&matrizes, indiceSomaB, &buscaSomaB);
 
-                if ((buscaSomaA->matriz->quantidade_linhas == buscaSomaB->matriz->quantidade_linhas) && (buscaSomaA->matriz->quantidade_colunas == buscaSomaB->matriz->quantidade_colunas)) {
-                    soma_matrizes(&buscaSomaA->matriz->matriz, &buscaSomaB->matriz->matriz, buscaSomaA->matriz->quantidade_linhas, buscaSomaA->matriz->quantidade_colunas);
-                } else {
-                    printf("So pode somar matrizes com numeros de linha e colunas iguais\n");
-                }
+                soma_matrizes(buscaSomaA->matriz, buscaSomaB->matriz);
                 break;
             case 3:
                 printf(" -- Subtracao de matrizes --\n");
@@ -323,11 +344,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaSubtracaoB);
                 acessar_matriz(&matrizes, indiceSubtracaoB, &buscaSubtracaoB);
 
-                if ((buscaSubtracaoA->matriz->quantidade_linhas == buscaSubtracaoB->matriz->quantidade_linhas) && (buscaSubtracaoA->matriz->quantidade_colunas == buscaSubtracaoB->matriz->quantidade_colunas)) {
-                    soma_matrizes(&buscaSubtracaoA->matriz->matriz, &buscaSubtracaoB->matriz->matriz, buscaSubtracaoA->matriz->quantidade_linhas, buscaSubtracaoA->matriz->quantidade_colunas);
-                } else {
-                    printf("So pode subtrair matrizes com numeros de linha e colunas iguais\n");
-                }
+                subtrair_matrizes(buscaSubtracaoA->matriz, buscaSubtracaoB->matriz);
                 break;
             case 4:
                 printf(" -- Multiplicacao de matrizes --\n");
@@ -336,7 +353,6 @@ int main() {
 
                 printf("Digite o indice da primeira matriz:\n");
                 scanf("%i", &indiceMultiplicacaoA);
-
                 printf("Digite o indice da segunda matriz:\n");
                 scanf("%i", &indiceMultiplicacaoB);
                 Matriz * buscaMultiplicacaoA;
@@ -346,11 +362,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaMultiplicacaoB);
                 acessar_matriz(&matrizes, indiceMultiplicacaoB, &buscaMultiplicacaoB);
 
-                if (buscaMultiplicacaoA->matriz->quantidade_colunas == buscaMultiplicacaoB->matriz->quantidade_linhas) {
-                    multiplicar_matrizes(&buscaMultiplicacaoA->matriz->matriz, &buscaMultiplicacaoB->matriz->matriz, buscaMultiplicacaoA->matriz->quantidade_linhas, buscaMultiplicacaoB->matriz->quantidade_colunas);
-                } else {
-                    printf("So se pode multiplicar matrizes quando o numero de colunas da primeira for igual ao numero de linhas da segunda\n");
-                }
+                multiplicar_matrizes(buscaMultiplicacaoA->matriz, buscaMultiplicacaoB->matriz);
                 break;
             case 5:
                 printf(" -- Matriz transposta --\n");
@@ -397,7 +409,6 @@ int main() {
             default:
                 printf("Opção inválida!\n");
                 break;
-
         }
     }
 }
