@@ -97,6 +97,31 @@ void adicionar_matriz(Matriz ** matrizes, Matriz_Esparsa **matrizEsparsa, int qu
         auxiliar->proximo = matriz;
     }
 }
+void libera_matriz_espersa(Matriz_Esparsa ** matriz) {
+    if (*matriz == NULL) return;
+    Matriz_Esparsa * aux;
+    while (*matriz != NULL) {
+        aux = *matriz;
+        *matriz = (*matriz)->proximo;
+        free(aux);
+    }
+    free(*matriz);
+}
+void libera_matriz_header(MatrizEsparsaHeader * header) {
+    free(header);
+}
+void libera_lista_matrizes(Matriz ** lista) {
+    if (*lista == NULL) return;
+    Matriz * atual;
+    while (*lista != NULL) {
+        atual = *lista;
+        libera_matriz_espersa(&atual->matriz->matriz);
+        libera_matriz_header(atual->matriz);
+        *lista = (*lista)->proximo;
+        free(atual);
+    }
+    free(*lista);
+}
 
 Matriz_Esparsa * busca_por_posicao_matriz_esparsa(Matriz_Esparsa ** matriz, int lin, int col) {
     Matriz_Esparsa *nodo = *matriz;
@@ -152,7 +177,7 @@ void imprimir_diagonal_principal(Matriz_Esparsa ** matriz, int tamanho_linhas, i
     if (*matriz == NULL) return;
     Matriz_Esparsa *matrizEsparsa;
     int linha;
-    for (linha = 0; linha < tamanho_linhas; linha++) {       
+    for (linha = 0; linha < tamanho_linhas; linha++) {
         int coluna;
         for (coluna = 0; coluna < tamanho_colunas; coluna++) {
             if (linha != coluna) {
@@ -297,6 +322,7 @@ int main() {
         scanf("%i", &escolha);
         switch (escolha) {
             case 0:
+                libera_lista_matrizes(&matrizes);
                 break;
             case 1:
                 printf("-- Adicionar matriz --\n");
