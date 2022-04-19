@@ -213,7 +213,7 @@ void imprimir_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, in
 void soma_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
-    if (*matrizA == NULL || *matrizB == NULL) return;
+
     if (matrizAHeader->quantidade_linhas != matrizBHeader->quantidade_linhas ||
         matrizAHeader->quantidade_colunas != matrizBHeader->quantidade_colunas) {
         printf("A operação de soma só é possível quando o numero de linhas e colunas das matrizes são iguais!\n");
@@ -244,7 +244,7 @@ void soma_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, Matr
 void subtrair_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
-    if (*matrizA == NULL || *matrizB == NULL) return;
+
     if (matrizAHeader->quantidade_linhas != matrizBHeader->quantidade_linhas ||
         matrizAHeader->quantidade_colunas != matrizBHeader->quantidade_colunas) {
         printf("A operação de subtração só é possível quando o numero de linhas e colunas das matrizes são iguais!\n");
@@ -274,7 +274,6 @@ void subtrair_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, 
 void multiplicar_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
-    if (*matrizA == NULL || *matrizB == NULL) return;
     if (matrizAHeader->quantidade_colunas != matrizBHeader->quantidade_linhas) {
         printf("A operação de multiplicação só é possível quando o numero de colunas da matriz A e o numero de linhas da matriz B são iguais!\n");
         return;
