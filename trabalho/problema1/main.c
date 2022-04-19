@@ -241,7 +241,7 @@ void soma_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, Matr
     imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
     adicionar_matriz(matrizes, &resultado, tamanho_linhas, tamanho_colunas);
 }
-void subtrair_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
+void subtrair_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
     if (*matrizA == NULL || *matrizB == NULL) return;
@@ -269,8 +269,9 @@ void subtrair_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader 
         }
     }
     imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
+    adicionar_matriz(matrizes, &resultado, tamanho_linhas, tamanho_colunas);
 }
-void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
+void multiplicar_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
     if (*matrizA == NULL || *matrizB == NULL) return;
@@ -301,6 +302,7 @@ void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHead
         }
     }
     imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
+    adicionar_matriz(matrizes, &resultado, tamanho_linhas, tamanho_colunas);
 }
 
 int main() {
@@ -372,7 +374,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaSubtracaoB);
                 acessar_matriz(&matrizes, indiceSubtracaoB, &buscaSubtracaoB);
 
-                subtrair_matrizes(buscaSubtracaoA->matriz, buscaSubtracaoB->matriz);
+                subtrair_matrizes(&matrizes, buscaSubtracaoA->matriz, buscaSubtracaoB->matriz);
                 break;
             case 4:
                 printf(" -- Multiplicacao de matrizes --\n");
@@ -390,7 +392,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaMultiplicacaoB);
                 acessar_matriz(&matrizes, indiceMultiplicacaoB, &buscaMultiplicacaoB);
 
-                multiplicar_matrizes(buscaMultiplicacaoA->matriz, buscaMultiplicacaoB->matriz);
+                multiplicar_matrizes(&matrizes, buscaMultiplicacaoA->matriz, buscaMultiplicacaoB->matriz);
                 break;
             case 5:
                 printf(" -- Matriz transposta --\n");
