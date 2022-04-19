@@ -132,7 +132,6 @@ Matriz_Esparsa * busca_por_posicao_matriz_esparsa(Matriz_Esparsa ** matriz, int 
     return NULL;
 }
 void imprimir_matriz_formatada(Matriz_Esparsa ** matriz, int tamanho_linhas, int tamanho_colunas) {
-    if (*matriz == NULL) return;
     Matriz_Esparsa *matrizEsparsa;
     int linha;
     for (linha = 0; linha < tamanho_linhas; linha++) {
@@ -211,7 +210,7 @@ void imprimir_matriz_transposta(Matriz_Esparsa ** matriz, int tamanho_linhas, in
     imprimir_matriz_formatada(&transposta, tamanho_colunas, tamanho_linhas);
 }
 
-void soma_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
+void soma_matrizes(Matriz ** matrizes, MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
     Matriz_Esparsa **matrizB = &matrizBHeader->matriz;
     if (*matrizA == NULL || *matrizB == NULL) return;
@@ -240,6 +239,7 @@ void soma_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * ma
         }
     }
     imprimir_matriz_formatada(&resultado, tamanho_linhas, tamanho_colunas);
+    adicionar_matriz(matrizes, &resultado, tamanho_linhas, tamanho_colunas);
 }
 void subtrair_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHeader * matrizBHeader) {
     Matriz_Esparsa **matrizA = &matrizAHeader->matriz;
@@ -304,6 +304,7 @@ void multiplicar_matrizes(MatrizEsparsaHeader * matrizAHeader, MatrizEsparsaHead
 }
 
 int main() {
+    setbuf(stdout, 0);
     Matriz * matrizes;
     iniciar_lista_matrizes(&matrizes);
 
@@ -352,7 +353,7 @@ int main() {
                 iniciar_lista_matrizes(&buscaSomaB);
                 acessar_matriz(&matrizes, indiceSomaB, &buscaSomaB);
 
-                soma_matrizes(buscaSomaA->matriz, buscaSomaB->matriz);
+                soma_matrizes(&matrizes, buscaSomaA->matriz, buscaSomaB->matriz);
                 break;
             case 3:
                 printf(" -- Subtracao de matrizes --\n");
