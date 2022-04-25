@@ -22,7 +22,7 @@ QueueNode * initialize_node() {
     return node;
 }
 
-Queue* initialize_queue() {
+Queue * initialize_queue() {
     Queue *queue = (Queue*) malloc(sizeof(Queue));
     if(!queue) exit(0);
     queue->start = NULL;
@@ -109,9 +109,34 @@ int search_node_by_name(Queue *queue, char name[]) {
 
 int save_text(QueueNode *node) {
     printf("Salvando paciente %s no relatorio...\n", node->name);
+    char file_name[] = "relatorio.txt";
+    FILE *report = fopen(file_name, "a");
+    if (report == NULL) {
+        printf("Arquivo %s nao encontrado.", file_name);
+        fclose(report);
+        exit(0);
+    }
+    fprintf(report, "paciente: %s;telefone: %s\n", node->name, node->phone);
+    fclose(report);
+    return 1;
+}
+
+int clear_text_file() {
+    char file_name[] = "relatorio.txt";
+    FILE *report = fopen(file_name, "w");
+    if (report == NULL) {
+        printf("Arquivo %s nao encontrado.", file_name);
+        fclose(report);
+        exit(0);
+    }
+    fprintf(report, "");
+    fclose(report);
+    return 1;
 }
 
 int main() {
+    setbuf(stdout, 0);
+    clear_text_file();
     Queue *queue = initialize_queue();
 
     int menu_choice = 0;
@@ -164,6 +189,7 @@ int main() {
                 break;
             case 5:
                 printf("Saindo...\n");
+                destroy_queue(queue);
                 break;
             default:
                 printf("Opção inválida, digite novamente\n");
