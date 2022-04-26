@@ -11,8 +11,7 @@
 #define PAREDE 1
 #define BECO 3
 #define VISITADA 4
-#define LINHAS 5
-#define COLUNAS 5
+#define MATRIX_SIZE 5 // number of rows and columns
 
 typedef struct solution_node {
     int position;
@@ -45,19 +44,19 @@ int destroy_stack(Solution *stack) {
     return 1;
 }
 
-int insert_stack(Solution *stack, int x, int y) {
+int insert_stack(Solution *stack, int row, int column) {
     SolutionNode *node = initialize_node();
-    int data = x * 100 + y;
+    int data = row * 100 + column;
     node->position = data;
     node->next = *stack;
     *stack = node;
     return 1;
 }
 
-int search_stack(Solution *stack, int *x, int *y) {
+int search_stack(Solution *stack, int *row, int *column) {
     if(stack == NULL || (*stack) == NULL) return 0;
-    *x = (*stack)->position / 100;
-    *y = (*stack)->position % 100;
+    *row = (*stack)->position / 100;
+    *column = (*stack)->position % 100;
     return 1;
 }
 
@@ -73,11 +72,11 @@ int random_in_range(int min, int max) {
     return min + (int) (rand() / (double) (RAND_MAX + 1) * (max - min + 1));
 }
 
-void print_maze(int (*maze)[LINHAS][COLUNAS]) {
-    int i, j;
-    for (i = 0; i < LINHAS; i++) {
-        for (j = 0; j < COLUNAS; j++) {
-            int current_position_value = (*maze)[i][j];
+void print_maze(int (*maze)[MATRIX_SIZE][MATRIX_SIZE]) {
+    int row, column;
+    for (row = 0; row < MATRIX_SIZE; row++) {
+        for (column = 0; column < MATRIX_SIZE; column++) {
+            int current_position_value = (*maze)[row][column];
             char current_position_char = LIVRE_CHAR;
             switch (current_position_value) {
                 case LIVRE:
@@ -102,14 +101,14 @@ void print_maze(int (*maze)[LINHAS][COLUNAS]) {
     }
 }
 
-void init_maze(int (*maze)[LINHAS][COLUNAS], int initial_mouse_x, int initial_mouse_y, int final_x, int final_y) {
+void init_maze(int (*maze)[MATRIX_SIZE][MATRIX_SIZE], int initial_mouse_row, int initial_mouse_column, int final_position_row, int final_position_column) {
     int i, j;
-    for (i = 0; i < LINHAS; i++)
-        for (j = 0; j < COLUNAS; j++) {
+    for (i = 0; i < MATRIX_SIZE; i++)
+        for (j = 0; j < MATRIX_SIZE; j++) {
             int number = random_in_range(LIVRE, PAREDE);
-            if (i == 0 || j == 0 || i == COLUNAS - 1 || j == COLUNAS - 1) number = PAREDE; // fill matrix boundary
-            if (i == initial_mouse_x && j == initial_mouse_y) number = RATO;
-            if (i == final_x && j == final_y) number = LIVRE;
+            if (i == 0 || j == 0 || i == MATRIX_SIZE - 1 || j == MATRIX_SIZE - 1) number = PAREDE; // fill matrix boundary
+            if (i == initial_mouse_row && j == initial_mouse_column) number = RATO;
+            if (i == final_position_row && j == final_position_column) number = LIVRE;
             (*maze)[i][j] = number;
         }
 }
@@ -118,64 +117,65 @@ int main() {
     setbuf(stdout, 0);
     srand(time(0));
 
-    int (*maze)[LINHAS][COLUNAS] = malloc(sizeof *maze);
-    int initial_mouse_x = 1;
-    int initial_mouse_y = 1;
-    int final_x = random_in_range(0, LINHAS - 1);
-    int final_y = random_in_range(0, LINHAS - 1);
+    int (*maze)[MATRIX_SIZE][MATRIX_SIZE] = malloc(sizeof *maze);
+    int initial_mouse_x = random_in_range(0, MATRIX_SIZE - 1);
+    int initial_mouse_y = random_in_range(0, MATRIX_SIZE - 1);
+    int final_x = random_in_range(0, MATRIX_SIZE - 1);
+    int final_y = random_in_range(0, MATRIX_SIZE - 1);
 
     init_maze(&(*maze), initial_mouse_x, initial_mouse_y, final_x, final_y);
 
-    int linha = initial_mouse_x;
-    int coluna = initial_mouse_y;
+    int row = initial_mouse_x;
+    int column = initial_mouse_y;
     Solution *solution = initialize_stack();
+    int found_exit = 0;
 
     do {
-        (*maze)[linha][coluna] = VISITADA;
-        if (linha == final_x && coluna == final_y) break;
+        (*maze)[row][column] = VISITADA;
+        if (row == final_x && column == final_y) {
+            found_exit = 1;
+            break;
+        }
 
-        int right = (*maze)[linha][coluna + 1];
-        int left = (*maze)[linha][coluna - 1];
-        int up = (*maze)[linha - 1][coluna];
-        int down = (*maze)[linha + 1][coluna];
+        int right = (*maze)[row][column + 1];
+        int left = (*maze)[row][column - 1];
+        int up = (*maze)[row - 1][column];
+        int down = (*maze)[row + 1][column];
 
         if (right == LIVRE) {
-            insert_stack(solution, linha, coluna);
-            coluna++;
+            insert_stack(solution, row, column);
+            column++;
             continue;
         } else if (left == LIVRE) {
-            insert_stack(solution, linha, coluna);
-            coluna--;
-
+            insert_stack(solution, row, column);
+            column--;
             continue;
         } else if (up == LIVRE) {
-            insert_stack(solution, linha, coluna);
-            linha--;
-
+            insert_stack(solution, row, column);
+            row--;
             continue;
         } else if (down == LIVRE) {
-            insert_stack(solution, linha, coluna);
-            linha++;
-
+            insert_stack(solution, row, column);
+            row++;
             continue;
         } else {
-            if (linha == initial_mouse_x && coluna == initial_mouse_y) {
+            if (row == initial_mouse_x && column == initial_mouse_y) {
                 // cant move, finish program
                 *solution = NULL;
                 break;
             } else {
                 // cant move, remove from stack
-                (*maze)[linha][coluna] = BECO;
-                search_stack(solution, &linha, &coluna);
+                (*maze)[row][column] = BECO;
+                search_stack(solution, &row, &column);
                 remove_stack(solution);
                 continue;
             }
         }
-    } while (linha < LINHAS && coluna < COLUNAS);
+    } while (row < MATRIX_SIZE && column < MATRIX_SIZE);
 
     printf("-- Comeco: (%d,%d) --\n", initial_mouse_x, initial_mouse_y);
     printf("-- Saida: (%d,%d) --\n", final_x, final_y);
-    if (*solution == NULL) {
+    if (!found_exit) {
         printf("Nao foi possivel achar uma saida!\n");
     }
     print_maze(&(*maze));
