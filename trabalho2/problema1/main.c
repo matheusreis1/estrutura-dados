@@ -5,7 +5,7 @@
 #define LIVRE_CHAR 32
 #define PAREDE_CHAR 219
 #define BECO_CHAR 176
-#define VISITADA_CHAR 56
+#define VISITADA_CHAR 46
 #define RATO -1
 #define LIVRE 0
 #define PAREDE 1
@@ -46,16 +46,11 @@ int destroy_stack(Solution *stack) {
 }
 
 int insert_stack(Solution *stack, int x, int y) {
-    // always on begin
     SolutionNode *node = initialize_node();
-
-    // calculate
     int data = x * 100 + y;
-
     node->position = data;
     node->next = *stack;
     *stack = node;
-
     return 1;
 }
 
@@ -82,26 +77,26 @@ void print_maze(int (*maze)[LINHAS][COLUNAS]) {
     int i, j;
     for (i = 0; i < LINHAS; i++) {
         for (j = 0; j < COLUNAS; j++) {
-            int posicao = (*maze)[i][j];
-            char print = LIVRE_CHAR;
-            switch (posicao) {
+            int current_position_value = (*maze)[i][j];
+            char current_position_char = LIVRE_CHAR;
+            switch (current_position_value) {
                 case LIVRE:
-                    print = LIVRE_CHAR;
+                    current_position_char = LIVRE_CHAR;
                     break;
                 case PAREDE:
-                    print = PAREDE_CHAR;
+                    current_position_char = PAREDE_CHAR;
                     break;
                 case BECO:
-                    print = BECO_CHAR;
+                    current_position_char = BECO_CHAR;
                     break;
                 case VISITADA:
-                    print = VISITADA_CHAR;
+                    current_position_char = VISITADA_CHAR;
                     break;
                 case RATO:
-                    print = RATO_CHAR;
+                    current_position_char = RATO_CHAR;
                     break;
             }
-            printf(" %c ", print);
+            printf(" %c ", current_position_char);
         }
         printf("\n");
     }
@@ -137,69 +132,42 @@ int main() {
 
     do {
         (*maze)[linha][coluna] = VISITADA;
-        if (linha == final_x && coluna == final_y) {
-            // reached the final
-            break;
-        }
+        if (linha == final_x && coluna == final_y) break;
 
         int right = (*maze)[linha][coluna + 1];
         int left = (*maze)[linha][coluna - 1];
         int up = (*maze)[linha - 1][coluna];
         int down = (*maze)[linha + 1][coluna];
 
-        if (linha == initial_mouse_x && coluna == initial_mouse_y) {
-            // is in mouse initial position
-            if (right == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                coluna++;
-                continue;
-            } else if (left == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                coluna--;
+        if (right == LIVRE) {
+            insert_stack(solution, linha, coluna);
+            coluna++;
+            continue;
+        } else if (left == LIVRE) {
+            insert_stack(solution, linha, coluna);
+            coluna--;
 
-                continue;
-            } else if (up == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                linha--;
+            continue;
+        } else if (up == LIVRE) {
+            insert_stack(solution, linha, coluna);
+            linha--;
 
-                continue;
-            } else if (down == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                linha++;
+            continue;
+        } else if (down == LIVRE) {
+            insert_stack(solution, linha, coluna);
+            linha++;
 
-                continue;
-            } else {
+            continue;
+        } else {
+            if (linha == initial_mouse_x && coluna == initial_mouse_y) {
                 // cant move, finish program
                 *solution = NULL;
                 break;
-            }
-        } else {
-            if (right == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                coluna++;
-
-                continue;
-            } else if (left == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                coluna--;
-
-                continue;
-            } else if (up == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                linha--;
-
-                continue;
-            } else if (down == LIVRE) {
-                insert_stack(solution, linha, coluna);
-                linha++;
-
-                continue;
             } else {
                 // cant move, remove from stack
                 (*maze)[linha][coluna] = BECO;
                 search_stack(solution, &linha, &coluna);
                 remove_stack(solution);
-
                 continue;
             }
         }
