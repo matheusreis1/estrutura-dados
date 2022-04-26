@@ -11,7 +11,7 @@
 #define PAREDE 1
 #define BECO 3
 #define VISITADA 4
-#define MATRIX_SIZE 5 // number of rows and columns
+#define MATRIX_SIZE 30 // number of rows and columns
 
 typedef struct solution_node {
     int position;
@@ -114,7 +114,6 @@ void init_maze(int (*maze)[MATRIX_SIZE][MATRIX_SIZE], int initial_mouse_row, int
 }
 
 int main() {
-    setbuf(stdout, 0);
     srand(time(0));
 
     int (*maze)[MATRIX_SIZE][MATRIX_SIZE] = malloc(sizeof *maze);
