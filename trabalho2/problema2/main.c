@@ -107,28 +107,27 @@ int search_node_by_name(Queue *queue, char name[]) {
     return 1;
 }
 
-int save_text(QueueNode *node) {
-    printf("Salvando paciente %s no relatorio...\n", node->name);
+FILE * open_report_file(char mode[]) {
     char file_name[] = "relatorio.txt";
-    FILE *report = fopen(file_name, "a");
+    FILE *report = fopen(file_name, mode);
     if (report == NULL) {
         printf("Arquivo %s nao encontrado.", file_name);
         fclose(report);
         exit(0);
     }
+    return report;
+}
+
+int save_text(QueueNode *node) {
+    printf("Salvando paciente %s no relatorio...\n", node->name);
+    FILE *report = open_report_file("a");
     fprintf(report, "paciente: %s;telefone: %s\n", node->name, node->phone);
     fclose(report);
     return 1;
 }
 
 int clear_text_file() {
-    char file_name[] = "relatorio.txt";
-    FILE *report = fopen(file_name, "w");
-    if (report == NULL) {
-        printf("Arquivo %s nao encontrado.", file_name);
-        fclose(report);
-        exit(0);
-    }
+    FILE *report = open_report_file("w");
     fprintf(report, "");
     fclose(report);
     return 1;
@@ -163,12 +162,12 @@ int main() {
                 insert_node(queue, name, phone, urgency);
                 break;
             case 2:
-                printf("busca de paciente\n");
                 printf("Digite o nome do paciente a ser procurado:\n");
                 char name_search[MAX_STRING_LIMIT];
                 scanf(" %[^\n]%*c", name_search);
 
-                search_node_by_name(queue, name_search);
+                if (!search_node_by_name(queue, name_search))
+                    printf("Paciente %s nao encontrado\n", name_search);
                 break;
             case 3:
                 printf("");
